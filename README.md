@@ -58,3 +58,41 @@ Fake-news-detection-main/
 ### 2. Start the app
 
 ### 3. Open in browser
+
+
+---
+
+## 🧪 How It Works
+
+1. User enters text or uploads an image  
+2. Input is validated through processing functions  
+3. The validator returns:
+   - prediction  
+   - verdict  
+   - color code  
+4. Output is sent back as JSON  
+
+---
+
+## 🎯 Use Cases
+
+- AI + NLP academic projects  
+- Fake news analysis  
+- Image-text content verification  
+- Educational or demo purposes  
+
+---
+
+## 🧩 Future Enhancements
+
+- Add full ML models  
+- Multi-language support  
+- Deploy on cloud platforms  
+- Add proper database logging  
+
+---
+
+## 📜 License
+
+This project is open-source under the MIT License.
+
