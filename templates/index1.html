@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake News Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #F9FAFB;
+        }
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .card {
+            background-color: #1F2937;
+            border: 1px solid #374151;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .btn-primary {
+            background-color: #3B82F6;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover { background-color: #2563EB; }
+        .btn-primary:disabled { background-color: #374151; cursor: not-allowed; }
+        .spinner {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* NEW STYLES FOR RESULTS */
+        .glow-shadow-green { box-shadow: 0 0 40px 10px rgba(74, 222, 128, 0.5); }
+        .glow-shadow-yellow { box-shadow: 0 0 40px 10px rgba(250, 204, 21, 0.5); }
+        .glow-shadow-red { box-shadow: 0 0 40px 10px rgba(248, 113, 113, 0.5); }
+        .traffic-light {
+            width: 8rem;
+            height: 8rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 4px solid #4B5563;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="main-container">
+
+        <!-- Home Page -->
+        <div id="page-home" class="w-full">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Fake News Detection</span>
+                </h1>
+                <p class="text-xl text-gray-400 mb-12">Uncover Misinformation with Multimodal Analysis</p>
+            </div>
+            <div class="w-full max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div onclick="showInputPage('english')" class="card p-8 rounded-2xl text-center cursor-pointer">
+                        <div class="text-5xl mb-4">📝</div>
+                        <h3 class="text-2xl font-bold mb-2">English Text</h3>
+                        <p class="text-gray-400">Analyze news articles or posts in English.</p>
+                    </div>
+                    <div onclick="showInputPage('hindi')" class="card p-8 rounded-2xl text-center cursor-pointer">
+                        <div class="text-5xl mb-4">✍️</div>
+                        <h3 class="text-2xl font-bold mb-2">Hindi Text</h3>
+                        <p class="text-gray-400">Analyze news articles or posts in Hindi.</p>
+                    </div>
+                    <div onclick="showInputPage('image')" class="card p-8 rounded-2xl text-center cursor-pointer">
+                        <div class="text-5xl mb-4">🖼️</div>
+                        <h3 class="text-2xl font-bold mb-2">Image / Meme</h3>
+                        <p class="text-gray-400">Analyze an image for manipulated content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- English Input Page (Hidden by default) -->
+        <div id="page-input-english" class="w-full max-w-2xl mx-auto hidden">
+            <button onclick="goHome()" class="text-blue-400 hover:text-blue-300 mb-4">&larr; Back to Home</button>
+            <h2 class="text-3xl font-bold mb-6 text-center">Analyze English Text</h2>
+            <!-- ADDED ID -->
+            <textarea id="text-input-english" class="w-full h-40 bg-gray-800 border border-gray-700 rounded-lg p-4 text-white" placeholder="Paste your English text here... (Try typing 'true', 'false', or 'partially' to test)"></textarea>
+            <!-- ADDED ID and onClick -->
+            <button id="btn-analyze-english" onclick="handleAnalyze('english')" class="btn-primary w-full py-3 px-4 rounded-lg font-semibold mt-4">
+                <span class="btn-text">Analyze</span>
+                <span class="spinner hidden"></span>
+            </button>
+        </div>
+
+        <!-- Hindi Input Page (Hidden by default) -->
+        <div id="page-input-hindi" class="w-full max-w-2xl mx-auto hidden">
+            <button onclick="goHome()" class="text-blue-400 hover:text-blue-300 mb-4">&larr; Back to Home</button>
+            <h2 class="text-3xl font-bold mb-6 text-center">Analyze Hindi Text</h2>
+            <!-- ADDED ID -->
+            <textarea id="text-input-hindi" class="w-full h-40 bg-gray-800 border border-gray-700 rounded-lg p-4 text-white" placeholder="पेस्ट करें आपका हिंदी टेक्स्ट यहाँ... (Try typing 'true', 'false', or 'partially' to test)"></textarea>
+            <!-- ADDED ID and onClick -->
+            <button id="btn-analyze-hindi" onclick="handleAnalyze('hindi')" class="btn-primary w-full py-3 px-4 rounded-lg font-semibold mt-4">
+                <span class="btn-text">Analyze</span>
+                <span class="spinner hidden"></span>
+            </button>
+        </div>
+
+        <!-- Image Input Page (Hidden by default) -->
+        <div id="page-input-image" class="w-full max-w-2xl mx-auto hidden">
+            <button onclick="goHome()" class="text-blue-400 hover:text-blue-300 mb-4">&larr; Back to Home</button>
+            <h2 class="text-3xl font-bold mb-6 text-center">Analyze Image / Meme</h2>
+            <div class="bg-gray-800 border-2 border-dashed border-gray-700 rounded-lg p-12 text-center cursor-pointer hover:bg-gray-700" onclick="document.getElementById('file-input-image').click()">
+                <p id="file-upload-text" class="text-gray-400">Drag & drop your image here, or click to browse</p>
+                <!-- ADDED ID and onChange -->
+                <input id="file-input-image" type="file" class="hidden" accept="image/*" onchange="updateFileName()" />
+            </div>
+            <!-- ADDED ID and onClick -->
+            <button id="btn-analyze-image" onclick="handleAnalyze('image')" class="btn-primary w-full py-3 px-4 rounded-lg font-semibold mt-4">
+                <span class="btn-text">Analyze</span>
+                <span class="spinner hidden"></span>
+            </button>
+        </div>
+
+        <!-- NEW: Results Page (Hidden by default) -->
+        <div id="page-results" class="w-full max-w-2xl mx-auto hidden">
+            <button id="btn-back-to-input" onclick="goBackToInput()" class="text-blue-400 hover:text-blue-300 mb-4">&larr; Back</button>
+            <h2 class="text-3xl font-bold mb-8 text-center">Analysis Result</h2>
+            <div class="card p-8 rounded-2xl">
+                <div id="result-traffic-light" class="traffic-light bg-gray-700 mb-6">
+                    <span id="result-emoji" class="text-5xl"></span>
+                </div>
+                <h3 id="result-verdict" class="text-3xl font-bold text-center mb-4"></h3>
+                <p id="result-details" class="text-gray-400 text-center text-lg"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================= -->
+    <!-- == ALL NEW JAVASCRIPT LOGIC == -->
+    <!-- ============================================= -->
+    <script>
+        // Page elements
+        const pageHome = document.getElementById('page-home');
+        const pageEnglish = document.getElementById('page-input-english');
+        const pageHindi = document.getElementById('page-input-hindi');
+        const pageImage = document.getElementById('page-input-image');
+        const pageResults = document.getElementById('page-results');
+
+        // Input elements
+        const textInputEnglish = document.getElementById('text-input-english');
+        const textInputHindi = document.getElementById('text-input-hindi');
+        const fileInputImage = document.getElementById('file-input-image');
+        const fileUploadText = document.getElementById('file-upload-text');
+
+        // Result elements
+        const resultTrafficLight = document.getElementById('result-traffic-light');
+        const resultEmoji = document.getElementById('result-emoji');
+        const resultVerdict = document.getElementById('result-verdict');
+        const resultDetails = document.getElementById('result-details');
+        const btnBackToInput = document.getElementById('btn-back-to-input');
+
+        // --- Page Navigation ---
+
+        function showInputPage(pageType) {
+            pageHome.classList.add('hidden');
+            // Store which page we came from so the 'Back' button works
+            btnBackToInput.setAttribute('data-input-type', pageType);
+
+            if (pageType === 'english') {
+                pageEnglish.classList.remove('hidden');
+            } else if (pageType === 'hindi') {
+                pageHindi.classList.remove('hidden');
+            } else if (pageType === 'image') {
+                pageImage.classList.remove('hidden');
+            }
+        }
+
+        function goHome() {
+            pageEnglish.classList.add('hidden');
+            pageHindi.classList.add('hidden');
+            pageImage.classList.add('hidden');
+            pageResults.classList.add('hidden');
+            pageHome.classList.remove('hidden');
+        }
+
+        function goBackToInput() {
+            pageResults.classList.add('hidden');
+            const inputType = btnBackToInput.getAttribute('data-input-type');
+            showInputPage(inputType);
+        }
+
+        function updateFileName() {
+            if (fileInputImage.files.length > 0) {
+                fileUploadText.textContent = fileInputImage.files[0].name;
+                fileUploadText.classList.remove('text-gray-400');
+                fileUploadText.classList.add('text-green-400');
+            }
+        }
+
+        // --- API Call and Analysis ---
+
+        async function handleAnalyze(inputType) {
+            const btn = document.getElementById(`btn-analyze-${inputType}`);
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+
+            // Show loading state
+            btnText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            btn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('input_type', inputType);
+
+            // 1. Prepare data
+            if (inputType === 'english') {
+                formData.append('text_input', textInputEnglish.value);
+            } else if (inputType === 'hindi') {
+                formData.append('text_input', textInputHindi.value);
+            } else if (inputType === 'image') {
+                if (fileInputImage.files.length === 0) {
+                    alert("Please select an image file first.");
+                    setButtonIdle(btn);
+                    return;
+                }
+                formData.append('image_input', fileInputImage.files[0]);
+            }
+
+            // 2. Send data to Flask
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                // 3. Display results
+                displayResults(result);
+
+            } catch (error) {
+                console.error("Error during analysis:", error);
+                alert("An error occurred. Please check the console.");
+            } finally {
+                // 4. Reset button
+                setButtonIdle(btn);
+            }
+        }
+
+        function setButtonIdle(btn) {
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+            btnText.classList.remove('hidden');
+            spinner.classList.add('hidden');
+            btn.disabled = false;
+        }
+
+        function displayResults(result) {
+            // Hide input page, show results page
+            pageEnglish.classList.add('hidden');
+            pageHindi.classList.add('hidden');
+            pageImage.classList.add('hidden');
+            pageResults.classList.remove('hidden');
+
+            // Clear previous styles
+            resultTrafficLight.className = "traffic-light mb-6"; // Reset
+            
+            // Apply new styles based on color from JSON
+            if (result.color === 'green') {
+                resultTrafficLight.classList.add('bg-green-500', 'glow-shadow-green');
+                resultEmoji.textContent = '✅';
+            } else if (result.color === 'yellow') {
+                resultTrafficLight.classList.add('bg-yellow-400', 'glow-shadow-yellow');
+                resultEmoji.textContent = '⚠️';
+            } else { // red
+                resultTrafficLight.classList.add('bg-red-500', 'glow-shadow-red');
+                resultEmoji.textContent = '❌';
+            }
+
+            // Populate text
+            resultVerdict.textContent = result.verdict;
+            resultDetails.textContent = result.details;
+        }
+    </script>
+</body>
+</html>
