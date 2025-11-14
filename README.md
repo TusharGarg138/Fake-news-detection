@@ -34,3 +34,27 @@ Fake-news-detection-main/
 │── templates/
 │ └── index1.html # Frontend page
 
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+- Python  
+- Flask  
+- httpx (API handling)  
+- Pillow (Image processing)  
+
+### Frontend
+- HTML  
+- CSS inside templates  
+
+---
+
+## ▶️ How to Run
+
+### 1. Install dependencies
+
+### 2. Start the app
+
+### 3. Open in browser
