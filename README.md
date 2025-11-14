@@ -30,8 +30,11 @@ The goal of this project is to demonstrate a clean, modular, and industry-friend
 
 Fake-news-detection-main/
 │── app1.py # Flask backend
+
 │── gemini_validator.py # Text/Image validation logic
+
 │── templates/
+
 │ └── index1.html # Frontend page
 
 
