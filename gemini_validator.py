@@ -7,7 +7,7 @@ from io import BytesIO
 from PIL import Image
 
 # --- Configuration ---
-API_KEY = "AIzaSyD-EviX3jsLIuIYACD5OVPBNH0O3gmsa9U"
+API_KEY = "API_KEY"
 TEXT_MODEL = "gemini-2.5-flash-preview-09-2025"
 VISION_MODEL = "gemini-2.5-flash-preview-09-2025"
 MAX_RETRIES = 3
@@ -28,9 +28,10 @@ Classify it into exactly ONE of these:
 Return ONLY valid JSON in this exact format:
 {
   "classification": "TRUE" | "FALSE" | "PARTIALLY",
+  "verdict_details": "short explanation"
 }
 """
-#"verdict_details": "short explanation"
+
 
 IMAGE_ANALYSIS_SYSTEM_PROMPT = """
 You are a digital media forensics expert. Analyze the image and classify it as:
@@ -41,9 +42,9 @@ You are a digital media forensics expert. Analyze the image and classify it as:
 Return ONLY valid JSON in this format:
 {
   "classification": "TRUE" | "FALSE" | "PARTIALLY",
+  "verdict_details": "short explanation"
 }
 """
-#"verdict_details": "short explanation"
 
 # --- Helper Functions ---
 
@@ -207,3 +208,4 @@ def validate_image(image_file):
         print("Error processing API response:", e)
         print("Full response:", api_result)
         return create_error_response(f"Could not parse API response: {e}")
+
